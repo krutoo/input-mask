@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { render } from 'react-dom';
-import { useInputMask } from '../src/hook';
+import { useInputMask } from '../src/react';
 import './index.css';
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -11,7 +11,6 @@ const App = () => {
   const ref = useRef();
 
   useInputMask(ref, { mask: '+7 (___) ___-__-__' });
-
 
   return (
     <>
