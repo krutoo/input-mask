@@ -3,6 +3,9 @@ export interface IRange {
   last: number
 }
 
+/**
+ * Работа с числовыми диапазонами.
+ */
 export const Range = {
   of: (head: number, last = head): IRange => ({ head, last }),
 
@@ -10,7 +13,7 @@ export const Range = {
 
   size: (range: IRange) => Math.max(range.head, range.last) - Math.min(range.head, range.last),
 
-  fromEvent: ({ target: t }: { target: HTMLInputElement }) => Range.of(t.selectionStart || 0, t.selectionEnd || 0),
+  fromTarget: (target: HTMLInputElement) => Range.of(target.selectionStart || 0, target.selectionEnd || 0),
 
   spread: (range: IRange): number[] => {
     const result = [];

@@ -1,22 +1,41 @@
-import { ChangeAction, DeleteAction, InsertAction, ReplaceAction } from './changes';
 import { Range, IRange } from './range';
 
-export type InputState = {
-  prevRange: IRange
-  nextRange: IRange
-  prevValue: string
-  nextValue: string
+export interface InputState {
+  range: IRange
+  value: string
 }
 
-export type Options = {
-  mask: string
-  pattern: RegExp
-  placeholder?: string
-}
+type IndexList = number[];
+
+interface BaseAction<T extends string, P = {}> { type: T, payload: InputState & P }
+
+export type UnknownAction = BaseAction<'UNKNOWN'>
+
+export type InsertAction = BaseAction<'INSERT', {
+  insertPosition: number
+  insertIndices: IndexList
+}>
+
+export type DeleteAction = BaseAction<'DELETE', {
+  deleteDirection: 'backward' | 'forward'
+  deleteIndices: IndexList
+}>
+
+export type ReplaceAction = BaseAction<'REPLACE', {
+  replacePosition: number
+  deleteIndices: IndexList
+  insertIndices: IndexList
+}>
+
+export type ChangeAction = InsertAction | DeleteAction | ReplaceAction | UnknownAction
 
 type Reducer = (state: InputState, action: ChangeAction) => InputState
 
-export const createReducer = ({ mask, pattern, placeholder = '_' }: Options): Reducer => {
+export const createReducer = ({ mask, pattern = /\d/, placeholder = '_' }: {
+  mask: string
+  pattern?: RegExp
+  placeholder?: string
+}): Reducer => {
   const placeIndices = mask
     .split('')
     .reduce((acc: number[], char, i) => (char === placeholder && acc.push(i), acc), []);
@@ -41,28 +60,28 @@ export const createReducer = ({ mask, pattern, placeholder = '_' }: Options): Re
     },
   };
 
-  const handleInsert = (state: InputState, payload: InsertAction['payload']) => {
-    const cleanChars = getCleanChars(state.prevValue);
+  const handleInsert = (state: InputState, payload: InsertAction['payload']): InputState => {
+    const cleanChars = getCleanChars(state.value);
     const insertIndex = Index.getNearestPlace(payload.insertPosition);
-    const insertChars = payload.insertIndices.map(i => state.nextValue[i]).filter(Char.isValid);
+    const insertChars = payload.insertIndices.map(i => payload.value[i]).filter(Char.isValid);
 
-    let nextRange = state.nextRange;
+    let range = payload.range;
 
     if (insertIndex !== -1) {
       const nextCaretPosition = Index.toMasked(insertIndex + insertChars.length);
 
       cleanChars.splice(insertIndex, 0, ...insertChars);
-      nextCaretPosition && (nextRange = Range.of(nextCaretPosition));
+      nextCaretPosition && (range = Range.of(nextCaretPosition));
     }
 
-    return { ...state, nextRange, nextValue: insertToMask(cleanChars) };
+    return { ...state, range, value: insertToMask(cleanChars) };
   };
 
-  const handleDelete = (state: InputState, payload: DeleteAction['payload']) => {
-    const cleanChars = getCleanChars(state.prevValue);
+  const handleDelete = (state: InputState, payload: DeleteAction['payload']): InputState => {
+    const cleanChars = getCleanChars(state.value);
     const isForward = payload.deleteDirection === 'forward';
-    const deleteIndex = Index.getNearestPlace(state.nextRange.head, isForward);
-    const nextRange = Range.of(Math.max(placeIndices[0], Index.toMasked(deleteIndex) || 0));
+    const deleteIndex = Index.getNearestPlace(payload.range.head, isForward);
+    const range = Range.of(Math.max(placeIndices[0], Index.toMasked(deleteIndex) || 0));
 
     let deleteCount = payload.deleteIndices.filter(Index.isPlace).length;
 
@@ -70,25 +89,25 @@ export const createReducer = ({ mask, pattern, placeholder = '_' }: Options): Re
 
     if (deleteIndex !== -1) {
       cleanChars.splice(deleteIndex, deleteCount);
-    } else if (state.prevRange.head > placeIndices[0] && !isForward) {
+    } else if (state.range.head > placeIndices[0] && !isForward) {
       cleanChars.splice(0, deleteCount);
     }
 
-    return { ...state, nextRange, nextValue: insertToMask(cleanChars) };
+    return { ...state, range, value: insertToMask(cleanChars) };
   };
 
-  const handleReplace = (state: InputState, payload: ReplaceAction['payload']) => {
-    const cleanChars = getCleanChars(state.prevValue);
+  const handleReplace = (state: InputState, payload: ReplaceAction['payload']): InputState => {
+    const cleanChars = getCleanChars(state.value);
     const replaceIndex = Index.getNearestPlace(payload.replacePosition);
     const carvedIndices = payload.deleteIndices.filter(Index.isPlace);
     const addedValidChars = payload.insertIndices
-      .map(i => state.nextValue[i])
+      .map(i => payload.value[i])
       .filter(Char.isValid);
-    const nextRange = Range.of(Index.toMasked(replaceIndex + addedValidChars.length));
+    const range = Range.of(Index.toMasked(replaceIndex + addedValidChars.length));
 
     replaceIndex !== -1 && cleanChars.splice(replaceIndex, carvedIndices.length, ...addedValidChars);
 
-    return { ...state, nextRange, nextValue: insertToMask(cleanChars) };
+    return { ...state, range, value: insertToMask(cleanChars) };
   };
 
   const getCleanChars = (masked: string) => masked
