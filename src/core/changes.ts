@@ -45,9 +45,9 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
     case 'DELETE':
       let deleteIndices = [];
 
-      if (next.range.head < prev.range.head) {
+      if (next.range.head < prev.range.last) {
         // удалили символы после каретки (aka backspace)
-        deleteIndices = Range.spreadOf(next.range.head, prev.range.head);
+        deleteIndices = Range.spreadOf(next.range.head, prev.range.last);
       } else {
         // удалили символы перед кареткой (aka delete)
         if (prev.value.indexOf(next.value) !== -1) {
