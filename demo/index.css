@@ -25,7 +25,12 @@ input {
   border: 1px solid #000;
 }
 
-ul {
+label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.demo-input + .demo-input {
   margin-top: 24px;
-  list-style-position: inside;
 }
