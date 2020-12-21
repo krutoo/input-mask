@@ -1,15 +1,23 @@
 {
-  "name": "input-mask",
+  "name": "@krutoo/input-mask",
   "version": "0.0.0",
   "description": "One more input mask library",
-  "scripts": {
-    "demo": "webpack serve --host 0.0.0.0 --mode=development --config=demo/webpack.config.js",
-    "type-check": "tsc --noEmit -p ."
-  },
   "author": "Dmitry Petrov <dima.krutoo@ya.ru>",
   "license": "MIT",
+  "scripts": {
+    "demo": "webpack serve --host 0.0.0.0 --mode=development --config=demo/webpack.config.js",
+    "type-check": "tsc --noEmit -p .",
+    "build:clean": "rimraf dist",
+    "build": "npm run build:clean && webpack --env production"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "devDependencies": {
     "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
     "@babel/preset-modules": "^0.1.4",
     "@babel/preset-react": "^7.12.10",
     "@types/dom-inputevent": "^1.0.6",
@@ -19,14 +27,25 @@
     "css-loader": "^5.0.1",
     "html-webpack-plugin": "^4.5.0",
     "mini-css-extract-plugin": "^1.3.3",
+    "rimraf": "^3.0.2",
+    "terser-webpack-plugin": "^5.0.3",
     "ts-loader": "^8.0.12",
     "typescript": "^4.1.3",
     "webpack": "^5.10.1",
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0"
   },
-  "dependencies": {
+  "peerDependencies": {
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
-  }
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krutoo/input-mask.git"
+  },
+  "bugs": {
+    "url": "https://github.com/krutoo/input-mask/issues"
+  },
+  "homepage": "https://github.com/krutoo/input-mask#readme"
 }
