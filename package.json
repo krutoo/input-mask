@@ -5,7 +5,8 @@
   "author": "Dmitry Petrov <dima.krutoo@ya.ru>",
   "license": "MIT",
   "scripts": {
-    "demo": "webpack serve --host 0.0.0.0 --mode=development --config=demo/webpack.config.js",
+    "demo:prepare": "npm-install-peers",
+    "demo": "npm run demo:prepare && webpack serve --host 0.0.0.0 --mode=development --config=demo/webpack.config.js",
     "type-check": "tsc --noEmit -p .",
     "build:clean": "rimraf dist",
     "build": "npm run build:clean && webpack --env production",
@@ -28,6 +29,7 @@
     "css-loader": "^5.0.1",
     "html-webpack-plugin": "^4.5.0",
     "mini-css-extract-plugin": "^1.3.3",
+    "npm-install-peers": "^1.2.1",
     "rimraf": "^3.0.2",
     "terser-webpack-plugin": "^5.0.3",
     "ts-loader": "^8.0.12",
