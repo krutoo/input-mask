@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { render } from 'react-dom';
-import { useInputMask } from '../src/react';
+import { useInputMask } from '../../src/react';
 import './index.css';
 
 window.addEventListener('DOMContentLoaded', () => {
