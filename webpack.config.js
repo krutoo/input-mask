@@ -45,35 +45,4 @@ module.exports = () => [
     },
     ...commons,
   },
-
-  // ES (module)
-  {
-    entry: './src/react.js',
-    output: {
-      path: DIST_DIR,
-      filename: 'index.module.js',
-    },
-    module: {
-      rules: [
-        {
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                '@babel/preset-modules',
-              ],
-            },
-          },
-        },
-        {
-          test: /\.tsx?$/,
-          exclude: /node_modules/,
-          use: 'ts-loader',
-        },
-      ],
-    },
-    ...commons,
-  },
 ];

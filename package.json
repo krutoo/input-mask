@@ -8,7 +8,8 @@
     "demo": "webpack serve --host 0.0.0.0 --mode=development --config=demo/webpack.config.js",
     "type-check": "tsc --noEmit -p .",
     "build:clean": "rimraf dist",
-    "build": "npm run build:clean && webpack --env production"
+    "build": "npm run build:clean && webpack --env production",
+    "prepublishOnly": "npm run build"
   },
   "main": "dist/index.js",
   "files": [
