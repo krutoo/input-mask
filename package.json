@@ -7,7 +7,7 @@
     "type-check": "tsc --noEmit -p ."
   },
   "author": "Dmitry Petrov <dima.krutoo@ya.ru>",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/preset-modules": "^0.1.4",
