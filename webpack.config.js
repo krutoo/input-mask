@@ -2,14 +2,14 @@ const path = require('path');
 const package = require('./package.json');
 
 module.exports = () => [
-  // CommonJS
   {
     entry: './src/react.js',
     output: {
       filename: path.basename(package.main),
       path: path.join(__dirname, path.dirname(package.main)),
-      libraryTarget: 'commonjs',
-      globalObject: 'this',
+      library: package.name,
+      libraryTarget: 'umd',
+      umdNamedDefine: true
     },
     module: {
       rules: [
@@ -35,7 +35,20 @@ module.exports = () => [
     mode: 'production',
     resolve: { extensions: ['.ts', '.js'] },
     devtool: 'source-map',
-    externals: Object.keys(package.peerDependencies || {}).map(name => ({ [name]: name })),
+    externals: {
+      react: {
+          commonjs: 'react',
+          commonjs2: 'react',
+          amd: 'React',
+          root: 'React',
+      },
+      'react-dom': {
+          commonjs: 'react-dom',
+          commonjs2: 'react-dom',
+          amd: 'ReactDOM',
+          root: 'ReactDOM',
+      },
+    },
     optimization: { minimize: false },
   },
 ];
