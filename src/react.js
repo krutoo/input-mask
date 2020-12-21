@@ -22,13 +22,13 @@ export const useInputMask = (ref, options) => useEffect(() => {
     range: Range.fromTarget(target),
   });
 
-  const updadeCurrentState = () => {
+  const updateCurrentState = () => {
     currentState = defineState(input);
   };
 
   const offList = [
-    on(document, 'selectionchange', updadeCurrentState),
-    on(input, 'keydown', updadeCurrentState),
+    on(document, 'selectionchange', updateCurrentState),
+    on(input, 'keydown', updateCurrentState),
     on(input, 'input', e => {
       // compute new state
       const action = defineChanges(currentState, defineState(e.target));
