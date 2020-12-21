@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "One more input mask library",
   "scripts": {
-    "demo": "webpack serve --host 0.0.0.0 --mode=development"
+    "demo": "webpack serve --host 0.0.0.0 --mode=development",
+    "type-check": "tsc --noEmit -p ."
   },
   "author": "Dmitry Petrov <dima.krutoo@ya.ru>",
   "license": "ISC",
