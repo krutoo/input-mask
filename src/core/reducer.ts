@@ -144,6 +144,11 @@ export const createReducer = ({ mask, pattern = /\d/, placeholder = '_' }: {
     return result;
   };
 
+  const normalizeRange = (state: InputState): InputState => ({
+    ...state,
+    range: Range.map(state.range, n => Math.min(n, state.value.length)),
+  });
+
   return (state, { type, payload }: ChangeAction) => {
     let nextState = state;
 
@@ -159,6 +164,6 @@ export const createReducer = ({ mask, pattern = /\d/, placeholder = '_' }: {
         break;
     }
 
-    return nextState;
+    return nextState === state ? state : normalizeRange(nextState);
   };
 };

@@ -9,17 +9,21 @@ export interface IRange {
 export const Range = {
   of: (head: number, last = head): IRange => ({ head, last }),
 
-  clone: (range: IRange): IRange => ({ ...range }),
+  clone: (r: IRange): IRange => ({ ...r }),
 
-  size: (range: IRange) => Math.max(range.head, range.last) - Math.min(range.head, range.last),
+  map: (r: IRange, cb: (n: number) => number): IRange => Range.of(cb(r.head),cb(r.last)),
+
+  equals: (a: IRange, b: IRange): boolean => a.head === b.head && a.last === b.last,
+
+  size: (r: IRange) => Math.max(r.head, r.last) - Math.min(r.head, r.last),
 
   fromTarget: (target: HTMLInputElement) => Range.of(target.selectionStart || 0, target.selectionEnd || 0),
 
-  spread: (range: IRange): number[] => {
+  spread: (r: IRange): number[] => {
     const result = [];
 
-    if (range.head !== range.last) {
-      for (let i = range.head; i < range.last; i++) {
+    if (r.head !== r.last) {
+      for (let i = r.head; i < r.last; i++) {
         result.push(i);
       }
     }
