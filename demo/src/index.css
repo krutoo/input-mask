@@ -20,9 +20,15 @@ h2 {
 input {
   display: block;
   width: 100%;
-  padding: 8px 16px;
+  padding: 8px 12px;
   font: inherit;
   border: 1px solid #000;
+  box-shadow: none;
+}
+
+input::placeholder {
+  opacity: 1;
+  color: #aaa;
 }
 
 label {

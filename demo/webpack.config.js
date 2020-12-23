@@ -3,10 +3,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-  entry: './demo/src/index.jsx',
+  entry: path.join(__dirname, './src/index.jsx'),
   output: {
     filename: 'main.js',
-    path: path.join(__dirname, 'demo/dist'),
+    path: path.join(__dirname, 'dist'),
   },
   resolve: {
     extensions: ['.ts', '.js', '.jsx', '.tsx'],
@@ -34,13 +34,13 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   devServer: {
-    contentBase: path.join(__dirname, 'demo/dist'),
+    contentBase: path.join(__dirname, 'dist'),
     port: 9100,
   },
   plugins: [
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
-      template: 'demo/src/index.ejs',
+      template: path.join(__dirname, 'src/index.ejs'),
     }),
   ],
 };
