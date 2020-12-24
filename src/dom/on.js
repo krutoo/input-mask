@@ -1,8 +1,8 @@
 export const on = (
-  target: EventTarget,
-  eventName: string,
-  handler: EventListener,
-  options?: AddEventListenerOptions
+  target,
+  eventName,
+  handler,
+  options
 ) => {
   target.addEventListener(eventName, handler, options);
 
