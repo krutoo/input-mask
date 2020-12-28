@@ -1,6 +1,12 @@
-import { Range } from '../core/range';
+export const on = (
+  target,
+  eventName,
+  handler,
+  options
+) => {
+  target.addEventListener(eventName, handler, options);
 
-export const defineState = target => ({
-  value: target.value,
-  range: Range.fromTarget(target),
-});
+  return () => {
+    target.removeEventListener(eventName, handler, options);
+  };
+};

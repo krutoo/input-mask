@@ -20,8 +20,13 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
         exclude: /node_modules/,
+        use: {
+          loader: 'ts-loader',
+          options: {
+            configFile: path.join(__dirname, 'tsconfig.json'),
+          },
+        },
       },
       {
         test: /\.css$/,

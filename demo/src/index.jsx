@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { useInputMask } from '../../src/react/hook';
+import { MaskMixin } from '../../src/react';
 import './index.css';
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -29,15 +29,11 @@ const App = () => (
   </>
 );
 
-const DemoInput = ({ mask, label }) => {
-  const ref = useRef();
+const DemoInput = ({ mask, label }) => (
+  <div className='demo-input'>
+    {label && (<label>{label}</label>)}
+    <MaskedInput maskOptions={{ mask }} placeholder={mask} />
+  </div>
+);
 
-  useInputMask(ref, { mask });
-
-  return (
-    <div className='demo-input'>
-      {label && (<label>{label}</label>)}
-      <input ref={ref} placeholder={mask} />
-    </div>
-  );
-};
+const MaskedInput = MaskMixin(props => (<input {...props} />));
