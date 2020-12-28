@@ -5,7 +5,7 @@ export interface InputState {
   value: string
 }
 
-type IndexList = number[];
+type IndexList = number[]
 
 interface BaseAction<T extends string, P = {}> { type: T, payload: InputState & P }
 
@@ -31,10 +31,10 @@ export type ChangeAction = InsertAction | DeleteAction | ReplaceAction | Unknown
 
 type Reducer = (state: InputState, action: ChangeAction) => InputState
 
-export const createReducer = ({ mask, pattern = /\d/, placeholder = '_' }: {
+export const createReducer = ({ mask, pattern, placeholder }: {
   mask: string
-  pattern?: RegExp
-  placeholder?: string
+  pattern: RegExp
+  placeholder: string
 }): Reducer => {
   const placeIndices = mask
     .split('')
@@ -121,7 +121,7 @@ export const createReducer = ({ mask, pattern = /\d/, placeholder = '_' }: {
       const maskChar = mask[i];
       const valueChar = cleanValue[j];
 
-      if (maskChar !== '_') {
+      if (maskChar !== placeholder) {
         result += maskChar;
       } else if (valueChar) {
         result += valueChar;
