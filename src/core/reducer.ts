@@ -103,11 +103,15 @@ export const createReducer = ({ mask, pattern, placeholder }: {
     const addedValidChars = payload.insertIndices
       .map(i => payload.value[i])
       .filter(Char.isValid);
-    const range = Range.of(Index.toMasked(replaceIndex + addedValidChars.length));
 
-    replaceIndex !== -1 && cleanChars.splice(replaceIndex, carvedIndices.length, ...addedValidChars);
+    if (replaceIndex !== -1) {
+      cleanChars.splice(replaceIndex, carvedIndices.length, ...addedValidChars);
+    }
 
-    return { ...state, range, value: insertToMask(cleanChars) };
+    const value = insertToMask(cleanChars);
+    const range = Range.of(Index.toMasked(replaceIndex + addedValidChars.length) || value.length);
+
+    return { ...state, range, value };
   };
 
   const getCleanChars = (masked: string) => masked
