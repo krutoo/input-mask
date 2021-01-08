@@ -6,11 +6,13 @@ import { ChangeAction, InputState } from './reducer';
  * ВАЖНО: только определяет изменения, ничего не знает про маски.
  */
 export const defineChanges = (prev: InputState, next: InputState): ChangeAction => {
+  const hasChanges = prev.value !== next.value;
+
   let type: ChangeAction['type'] = 'UNKNOWN';
   let payload: ChangeAction['payload'];
 
   // define type
-  if (prev.value !== next.value) {
+  if (hasChanges) {
     if (next.value.length > prev.value.length) {
       if (Range.size(prev.range) > 0) {
         type = 'REPLACE';
@@ -30,6 +32,9 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
         type = 'REPLACE';
       }
     }
+  } else if (!Range.equals(prev.range, next.range)) {
+    // вставили то же самое что уже было введено
+    type = 'REPLACE';
   }
 
   // define payload
@@ -80,12 +85,23 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
       break;
 
     case 'REPLACE':
-      payload = {
-        ...next,
-        replacePosition: prev.range.head,
-        deleteIndices: Range.spread(prev.range),
-        insertIndices: Range.spreadOf(prev.range.head, next.range.last),
-      };
+      if (hasChanges) {
+        // заменили выделенную часть
+        payload = {
+          ...next,
+          replacePosition: prev.range.head,
+          deleteIndices: Range.spread(prev.range),
+          insertIndices: Range.spreadOf(prev.range.head, next.range.last),
+        };
+      } else {
+        // вставили то же самое что уже было введено
+        payload = {
+          ...next,
+          replacePosition: prev.range.head,
+          deleteIndices: Range.spread(prev.range),
+          insertIndices: Range.spread(prev.range),
+        };
+      }
       break;
 
     case 'UNKNOWN':

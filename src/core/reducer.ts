@@ -97,6 +97,15 @@ export const createReducer = ({ mask, pattern, placeholder }: {
   };
 
   const handleReplace = (state: InputState, payload: ReplaceAction['payload']): InputState => {
+    if (state.value === payload.value) {
+      return {
+        ...state,
+        range: Range.of(
+          Index.toMasked(Index.getNearestPlace(payload.range.last)) || state.value.length
+        ),
+      };
+    }
+
     const cleanChars = getCleanChars(state.value);
     const replaceIndex = Index.getNearestPlace(payload.replacePosition);
     const carvedIndices = payload.deleteIndices.filter(Index.isPlace);
