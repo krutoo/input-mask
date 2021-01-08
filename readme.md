@@ -26,6 +26,7 @@ npm install --save @krutoo/input-mask
 ## To Do
 
 - Create helper to use with `vanilla js` (no frameworks)
+- add able to use middleware methods to prepare value before mask applying
 - Divide `react solution` on `react` and `vanilla js` solutions
 - Vue solution
 - React native solution
