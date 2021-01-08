@@ -13,7 +13,12 @@ body {
   font-family: sans-serif;
 }
 
-h2 {
+#root {
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+h2, h3 {
   margin-bottom: 24px;
 }
 
@@ -22,8 +27,14 @@ input {
   width: 100%;
   padding: 8px 12px;
   font: inherit;
-  border: 1px solid #000;
+  border: 1px solid #aaa;
+  border-radius: 4px;
   box-shadow: none;
+}
+
+input:focus {
+  border-color: #333;
+  box-shadow: 0 0 0 1px #333;
 }
 
 input::placeholder {
@@ -37,6 +48,29 @@ label {
   margin-bottom: 8px;
 }
 
-.demo-input + .demo-input {
+button {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font: inherit;
+  background: #eee;
+}
+
+button:active {
+  background: #bbb;
+}
+
+.demo-block + .demo-block {
   margin-top: 24px;
+}
+
+.demo-block + h3 {
+  margin-top: 36px;
+}
+
+.demo-block .controls {
+  margin-top: 16px;
+}
+
+.demo-block .controls button + button {
+  margin-left: 12px;
 }
