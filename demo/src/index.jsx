@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { render } from 'react-dom';
-import { sample } from 'lodash';
 import { MaskMixin } from '../../src/react';
 import './index.css';
 
@@ -51,7 +50,9 @@ const Demo = ({ mask, label }) => (
 
 const DemoStateful = () => {
   const [value, setValue] = useState('');
-  const [{ mask, label }, setVariant] = useState(variants[0]);
+  const [variantIndex, setVariantIndex] = useState(0);
+
+  const { mask, label } = variants[variantIndex];
 
   return (
     <div className='demo-block'>
@@ -64,7 +65,7 @@ const DemoStateful = () => {
       />
       <div className="controls">
         <button onClick={() => setValue('')}>Clean</button>
-        <button onClick={() => setVariant(sample(variants))}>Change mask</button>
+        <button onClick={() => setVariantIndex((variantIndex + 1) % variants.length)}>Change mask</button>
       </div>
     </div>
   );
