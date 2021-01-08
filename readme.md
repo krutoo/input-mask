@@ -22,3 +22,12 @@ There is a several functions:
 ```bash
 npm install --save @krutoo/input-mask
 ```
+
+## To Do
+
+- Create helper to use with `vanilla js` (no frameworks)
+- Divide `react solution` on `react` and `vanilla js` solutions
+- Vue solution
+- React native solution
+- Angular
+- Svelte
