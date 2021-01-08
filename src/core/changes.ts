@@ -51,26 +51,15 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
       let deleteIndices: number[] = [];
 
       if (Range.size(prev.range) === 0) {
-        // удалили какую-то часть текста
-        if (prev.value.indexOf(next.value) !== -1) {
-          // удалили часть спереди или сзади
-          if (next.range.head === prev.range.head) {
-            // удалили после каретки (aka delete)
-            deleteIndices = Range.spreadOf(prev.range.head, prev.value.length);
-          } else {
-            // удалили перед кареткой (aka backspace)
-            deleteIndices = Range.spreadOf(next.range.head, prev.range.head);
-          }
+        // удалили какую-то часть текста (delete forward/backward, hard/soft...)
+        if (next.range.head === prev.range.head) {
+          // удалили после каретки (aka delete)
+          const delta = prev.value.length - next.value.length;
+
+          deleteIndices = Range.spreadOf(prev.range.head, prev.range.head + delta);
         } else {
-          // удалили часть из середины
-          if (next.range.head === prev.range.head) {
-            // удалили после каретки (aka delete)
-            const shiftPartIndex = prev.value.lastIndexOf(next.value.slice(next.range.head));
-            deleteIndices = Range.spreadOf(prev.range.head, shiftPartIndex);
-          } else {
-            // удалили перед кареткой (aka backspace)
-            deleteIndices = Range.spreadOf(next.range.head, prev.range.head);
-          }
+          // удалили перед кареткой (aka backspace)
+          deleteIndices = Range.spreadOf(next.range.head, prev.range.head);
         }
       } else {
         // просто вырезали выделенную часть
