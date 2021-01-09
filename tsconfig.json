@@ -13,7 +13,8 @@
     "declaration": true
   },
   "include": [
-    "./src/core/**/*"
+    "./src/core/**/*",
+    "./src/dom/**/*",
   ],
   "exclude": [
     "node_modules",
