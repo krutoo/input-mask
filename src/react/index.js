@@ -1,85 +1,129 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { defineChanges, createReducer, Range } from '../core';
-import { on } from './utils';
+import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import { defineChanges, createReducer } from '../core';
+import { on, Range } from '../dom/utils';
+import { useActualRef } from './utils';
 
-const defaultOptions = { placeholder: '_', pattern: /\d/ };
+const defaultOptions = { mask: '____', placeholder: '_', pattern: /\d/ };
 
-export const MaskMixin = render => ({
+export const MaskMixin = render => forwardRef(({
   value: valueProp,
   onChange,
   maskOptions,
   ...inputProps
-}) => {
+}, ref) => {
   const value = valueProp || '';
   const options = { ...defaultOptions, ...maskOptions };
   const [reducer, setReducer] = useState();
+  const handlerRef = useActualRef(onChange);
+  const stateRef = useRef(State.of(''));
   const inputRef = useRef();
-  const stateRef = useRef(State.EMPTY);
 
-  useLayoutEffect(() => {
+  const handleChanges = () => {
+    handlerRef.current && handlerRef.current({
+      value: stateRef.current.value,
+      cleanValue: Value.toClean(options, stateRef.current.value),
+    });
+  };
+
+  useImperativeHandle(ref, () => inputRef);
+
+  // create reducer
+  useEffect(() => {
     setReducer(() => createReducer(options));
+
+    stateRef.current = State.of('');
+
+    // save and apply next state
+    stateRef.current = State.init(options);
+    State.apply(stateRef.current, inputRef.current);
+
+    handleChanges();
   }, [options.mask, options.placeholder, options.pattern]);
 
+  // handle value change
   useEffect(() => {
-    if (!reducer) return;
+    const newMaskedValue = Value.toMasked(options, value);
 
-    // compute initial state
-    const maskValidChars = options.mask.split('').filter(c => options.pattern.test(c)).join('');
-    const readyValue = value.indexOf(maskValidChars) === 0 ? value.slice(maskValidChars.length) : value;
+    if (!reducer || stateRef.current.value === newMaskedValue) return;
+
+    // compute next state
     const firstPlace = options.mask.indexOf(options.placeholder);
-    const initial = {
-      value: options.mask.slice(0, firstPlace),
-      range: Range.of(0, firstPlace),
-    };
+    const action = defineChanges(
+      State.of(stateRef.current.value, Range.of(firstPlace, stateRef.current.value.length)),
+      State.of(newMaskedValue)
+    );
 
-    const action = defineChanges(initial, { value: readyValue, range: Range.of(readyValue.length) });
-    stateRef.current = reducer(initial, action);
-
-    // apply initial state
+    // save and apply next state
+    stateRef.current = reducer(stateRef.current, action);
     State.apply(stateRef.current, inputRef.current);
-    onChange && onChange(stateRef.current);
   }, [value, reducer]);
 
+  // handle input events
   useEffect(() => {
     if (!reducer) return;
-
-    const input = inputRef.current;
 
     const offList = [
       on(document, 'selectionchange', () => {
-        stateRef.current = State.define(input);
+        stateRef.current = State.fromTarget(inputRef.current);
       }),
-      on(input, 'input', event => {
+      on(inputRef.current, 'input', event => {
         // compute next state
-        const action = defineChanges(stateRef.current, State.define(event.target));
-        const nextState = reducer(stateRef.current, action);
+        const action = defineChanges(stateRef.current, State.fromTarget(event.target));
 
-        // apply next state
-        State.apply(nextState, input);
+        // save and apply next state
+        stateRef.current = reducer(stateRef.current, action);
+        State.apply(stateRef.current, inputRef.current);
 
-        // save next state as current
-        stateRef.current = nextState;
-        onChange && onChange(stateRef.current);
+        handleChanges();
       }),
     ];
 
-    return () => offList.forEach(off => off());
+    return () => offList.forEach(fn => fn());
   }, [reducer]);
 
   return render({ ...inputProps, ref: inputRef });
-};
+});
 
 const State = {
-  EMPTY: {
-    value: '',
-    range: Range.of(0),
-  },
-  define: target => ({
-    value: target.value,
-    range: Range.fromTarget(target),
-  }),
+  of: (value, range = Range.of(value.length)) => ({ value, range }),
+
+  fromTarget: target => State.of(target.value, Range.fromTarget(target)),
+
   apply: (state, target) => {
     target.value = state.value;
     target.setSelectionRange(state.range.head, state.range.last);
+  },
+
+  init: ({ mask, placeholder }) => {
+    const firstPlace = mask.indexOf(placeholder);
+    return State.of(mask.slice(0, firstPlace));
+  },
+};
+
+const Value = {
+  toClean: ({ mask, placeholder }, maskedValue) => {
+    let result = '';
+
+    for (let i = 0; i < maskedValue.length; i++) {
+      if (mask[i] === placeholder) {
+        result += maskedValue[i];
+      }
+    }
+
+    return result;
+  },
+  toMasked: ({ mask, placeholder }, cleanValue) => {
+    let result = '';
+
+    for (let i = 0, j = 0; i < mask.length; i++) {
+      if (mask[i] === placeholder && cleanValue[j]) {
+        result += cleanValue[j];
+        j++;
+      } else if (mask[i] !== placeholder && j < cleanValue.length) {
+        result += mask[i];
+      }
+    }
+
+    return result;
   },
 };

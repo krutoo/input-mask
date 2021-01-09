@@ -1,12 +1,7 @@
-export const on = (
-  target,
-  eventName,
-  handler,
-  options
-) => {
-  target.addEventListener(eventName, handler, options);
+import { useRef } from 'react';
 
-  return () => {
-    target.removeEventListener(eventName, handler, options);
-  };
+export const useActualRef = value => {
+  const ref = useRef();
+  ref.current = value;
+  return ref;
 };
