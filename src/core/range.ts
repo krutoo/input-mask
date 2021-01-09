@@ -17,8 +17,6 @@ export const Range = {
 
   size: (r: IRange) => Math.max(r.head, r.last) - Math.min(r.head, r.last),
 
-  fromTarget: (target: HTMLInputElement) => Range.of(target.selectionStart || 0, target.selectionEnd || 0),
-
   spread: (r: IRange): number[] => {
     const result = [];
 
