@@ -31,11 +31,13 @@ export type ChangeAction = InsertAction | DeleteAction | ReplaceAction | Unknown
 
 type Reducer = (state: InputState, action: ChangeAction) => InputState
 
-export const createReducer = ({ mask, pattern, placeholder }: {
+export type ReducerOptions = {
   mask: string
   pattern: RegExp
   placeholder: string
-}): Reducer => {
+};
+
+export const createReducer = ({ mask, pattern, placeholder }: ReducerOptions): Reducer => {
   const placeIndices = mask
     .split('')
     .reduce((acc: number[], char, i) => (char === placeholder && acc.push(i), acc), []);
