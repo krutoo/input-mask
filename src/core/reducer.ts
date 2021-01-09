@@ -76,7 +76,7 @@ export const createReducer = ({ mask, pattern, placeholder }: ReducerOptions): R
       nextCaretPosition && (range = Range.of(nextCaretPosition));
     }
 
-    return { ...state, range, value: insertToMask(cleanChars) };
+    return { ...state, range, value: toMasked(cleanChars) };
   };
 
   const handleDelete = (state: InputState, payload: DeleteAction['payload']): InputState => {
@@ -95,7 +95,7 @@ export const createReducer = ({ mask, pattern, placeholder }: ReducerOptions): R
       cleanChars.splice(0, deleteCount);
     }
 
-    return { ...state, range, value: insertToMask(cleanChars) };
+    return { ...state, range, value: toMasked(cleanChars) };
   };
 
   const handleReplace = (state: InputState, payload: ReplaceAction['payload']): InputState => {
@@ -119,7 +119,7 @@ export const createReducer = ({ mask, pattern, placeholder }: ReducerOptions): R
       cleanChars.splice(replaceIndex, carvedIndices.length, ...addedValidChars);
     }
 
-    const value = insertToMask(cleanChars);
+    const value = toMasked(cleanChars);
     const range = Range.of(Index.toMasked(replaceIndex + addedValidChars.length) || value.length);
 
     return { ...state, range, value };
@@ -129,7 +129,7 @@ export const createReducer = ({ mask, pattern, placeholder }: ReducerOptions): R
     .split('')
     .filter((c, i) => Char.isValid(c) && Index.isPlace(i));
 
-  const insertToMask = (cleanValue: string | string[]): string => {
+  const toMasked = (cleanValue: string | string[]): string => {
     let result = '';
 
     for (let i = 0, j = 0; i < mask.length; i++) {
