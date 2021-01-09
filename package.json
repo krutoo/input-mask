@@ -2,6 +2,11 @@
   "name": "@krutoo/input-mask",
   "version": "0.0.6",
   "description": "One more input mask library",
+  "keywords": [
+    "input",
+    "mask",
+    "pattern"
+  ],
   "author": "Dmitry Petrov <dima.krutoo@ya.ru>",
   "license": "MIT",
   "scripts": {
