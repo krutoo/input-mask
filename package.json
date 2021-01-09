@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "demo:prepare": "npm-install-peers",
-    "demo": "webpack serve --host 0.0.0.0 --mode=development --config=demo/webpack.config.js",
+    "demo": "webpack serve --config=demo/webpack.config.js",
     "type-check": "tsc --noEmit -p .",
     "build:clean": "rimraf dist",
     "build": "npm run build:clean && tsc",
