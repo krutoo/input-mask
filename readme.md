@@ -19,16 +19,43 @@ There is a several functions:
 
 ## Usage
 
+Installing:
+
 ```bash
 npm install --save @krutoo/input-mask
 ```
 
+Usage:
+
+```js
+import { InputMask } from '@krutoo/input-mask/dist/dom';
+
+const input = document.querySelector('input#phone');
+
+const inputMask = InputMask(input, {
+  mask: '___-____-____',
+  placeholder: '_',
+  pattern: /\d/,
+
+  onChange: ({ value, cleanValue, ready }) => {
+    // value is string with masked value
+    // cleanValue is string only writable characters
+    // ready is boolean which shows that the mask is completely filled
+  };
+});
+
+// returns actual state of input
+const { value, cleanValue, ready } = inputMask.getData();
+
+// sets value manually
+inputMask.setValue('00000000000');
+
+// disables masking on element
+inputMask.disable();
+```
+
 ## To Do
 
-- Create helper to use with `vanilla js` (no frameworks)
-- add able to use middleware methods to prepare value before mask applying
-- Divide `react solution` on `react` and `vanilla js` solutions
-- Vue solution
-- React native solution
-- Angular
-- Svelte
+- ✅ Create helper to use with `vanilla js` (no frameworks)
+- ✅ Divide `react solution` on `react` and `vanilla js` solutions
+- Add able to use middleware methods to prepare value before mask applying
