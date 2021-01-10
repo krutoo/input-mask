@@ -101,7 +101,7 @@ export const createReducer = ({ mask, pattern, placeholder }: ReducerOptions): R
   };
 
   const handleReplace = (state: InputState, payload: ReplaceAction['payload']): InputState => {
-    // nothing has changed - just move caret to end
+    // ничего не изменилось - просто переносим каретку в конец
     if (state.value === payload.value) {
       return {
         ...state,
