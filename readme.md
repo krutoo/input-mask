@@ -4,7 +4,7 @@ JavaScript lib for making static masked inputs
 
 ## What is it?
 
-This package now contains only parts for build your own solution to provide input masking.
+This package also contains parts for build your own solution to provide input masking.
 
 There is a several functions:
 
