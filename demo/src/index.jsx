@@ -57,7 +57,9 @@ const DemoVanilla = ({ mask, label, ...inputProps }) => {
   useEffect(() => {
     const m = InputMask(ref.current, {
       mask,
-      onChange: data => console.log(data),
+      onChange: data => {
+        console.log(data);
+      },
     });
 
     setInputMask(m);
