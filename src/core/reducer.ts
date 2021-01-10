@@ -5,26 +5,24 @@ export interface InputState {
   value: string
 }
 
-type IndexList = number[]
-
 interface BaseAction<T extends string, P = {}> { type: T, payload: InputState & P }
 
 export type UnknownAction = BaseAction<'UNKNOWN'>
 
 export type InsertAction = BaseAction<'INSERT', {
   insertPosition: number
-  insertIndices: IndexList
+  insertIndices: number[]
 }>
 
 export type DeleteAction = BaseAction<'DELETE', {
   deleteDirection: 'backward' | 'forward'
-  deleteIndices: IndexList
+  deleteIndices: number[]
 }>
 
 export type ReplaceAction = BaseAction<'REPLACE', {
   replacePosition: number
-  deleteIndices: IndexList
-  insertIndices: IndexList
+  deleteIndices: number[]
+  insertIndices: number[]
 }>
 
 export type ChangeAction = InsertAction | DeleteAction | ReplaceAction | UnknownAction
