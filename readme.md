@@ -59,3 +59,4 @@ inputMask.disable();
 - ✅ Create helper to use with `vanilla js` (no frameworks)
 - ✅ Divide `react solution` on `react` and `vanilla js` solutions
 - Add able to use middleware methods to prepare value before mask applying
+- Add examples of usage in React, React Native, Vue, Angular, Svelte...
