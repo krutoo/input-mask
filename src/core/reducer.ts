@@ -87,7 +87,9 @@ export const createReducer = ({ mask, pattern, placeholder }: ReducerOptions): R
 
     let deleteCount = payload.deleteIndices.filter(Index.isPlace).length;
 
-    !isForward && deleteCount === 0 && (deleteCount = 1);
+    if (!isForward && deleteCount === 0) {
+      deleteCount = 1;
+    }
 
     if (deleteIndex !== -1) {
       cleanChars.splice(deleteIndex, deleteCount);
@@ -99,6 +101,7 @@ export const createReducer = ({ mask, pattern, placeholder }: ReducerOptions): R
   };
 
   const handleReplace = (state: InputState, payload: ReplaceAction['payload']): InputState => {
+    // nothing has changed - just move caret to end
     if (state.value === payload.value) {
       return {
         ...state,
@@ -129,12 +132,12 @@ export const createReducer = ({ mask, pattern, placeholder }: ReducerOptions): R
     .split('')
     .filter((c, i) => Char.isValid(c) && Index.isPlace(i));
 
-  const toMasked = (cleanValue: string | string[]): string => {
+  const toMasked = (cleanChars: string[]): string => {
     let result = '';
 
     for (let i = 0, j = 0; i < mask.length; i++) {
       const maskChar = mask[i];
-      const valueChar = cleanValue[j];
+      const valueChar = cleanChars[j];
 
       if (maskChar !== placeholder) {
         result += maskChar;
