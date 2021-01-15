@@ -10,7 +10,7 @@
   "author": "Dmitry Petrov <dima.krutoo@ya.ru>",
   "license": "MIT",
   "scripts": {
-    "demo": "webpack serve --config=demo/webpack.config.js",
+    "example": "webpack serve --config=example/webpack.config.js",
     "type-check": "tsc --noEmit -p .",
     "build:clean": "rimraf dist",
     "build": "npm run build:clean && tsc",
