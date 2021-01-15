@@ -165,18 +165,18 @@ export const createReducer = ({ mask, pattern, placeholder }: ReducerOptions): R
     range: Range.map(state.range, n => Math.min(n, state.value.length)),
   });
 
-  return (state, { type, payload }: ChangeAction) => {
+  return (state, action: ChangeAction) => {
     let nextState = state;
 
-    switch (type) {
+    switch (action.type) {
       case 'INSERT':
-        nextState = handleInsert(state, payload as unknown as InsertAction['payload']);
+        nextState = handleInsert(state, action.payload);
         break;
       case 'DELETE':
-        nextState = handleDelete(state, payload as unknown as DeleteAction['payload']);
+        nextState = handleDelete(state, action.payload);
         break;
       case 'REPLACE':
-        nextState = handleReplace(state, payload as unknown as ReplaceAction['payload']);
+        nextState = handleReplace(state, action.payload);
         break;
     }
 
