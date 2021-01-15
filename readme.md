@@ -41,7 +41,7 @@ const inputMask = InputMask(input, {
     // value is string with masked value
     // cleanValue is string only writable characters
     // ready is boolean which shows that the mask is completely filled
-  };
+  },
 });
 
 // returns actual state of input
