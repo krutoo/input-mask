@@ -10,22 +10,22 @@ window.addEventListener('DOMContentLoaded', () => {
 const variants = [
   {
     mask: '+7 (___) ___-__-__',
-    label: 'Номер телефона',
+    label: 'Russia phone number',
     type: 'tel',
     id: 'phone',
   },
   {
     mask: '__ __ ______',
-    label: 'Серия и номер паспорта',
+    label: 'Russia series and number of passport',
   },
   {
     mask: '____ ____ ____ ____',
-    label: 'Номер карты',
+    label: 'Credit card number',
     autoComplete: 'cc-number',
   },
   {
     mask: '__ / __ / ____',
-    label: 'Дата',
+    label: 'Date',
   },
 ];
 
