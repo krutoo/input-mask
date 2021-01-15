@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { render } from 'react-dom';
-import { MaskMixin } from '../../src/react';
 import { InputMask } from '../../src/dom';
 import './index.css';
 
@@ -36,17 +35,6 @@ const App = () => (
     {variants.map((variant, i) => (
       <DemoVanilla key={i} {...variant} />
     ))}
-
-    <h3>React solution (component mixin)</h3>
-    {variants.map((variant, i) => (
-      <Demo key={i} {...variant} />
-    ))}
-
-    <h3>React solution with value prop change</h3>
-    <DemoStateful
-      mask='+7 (___) ___-__-__'
-      label='Номер телефона'
-    />
   </>
 );
 
@@ -55,16 +43,16 @@ const DemoVanilla = ({ mask, label, ...inputProps }) => {
   const ref = useRef();
 
   useEffect(() => {
-    const m = InputMask(ref.current, {
+    const im = InputMask(ref.current, {
       mask,
       onChange: data => {
         console.log(data);
       },
     });
 
-    setInputMask(m);
+    setInputMask(im);
 
-    return () => m.disable();
+    return () => im.disable();
   }, []);
 
   return (
@@ -75,42 +63,10 @@ const DemoVanilla = ({ mask, label, ...inputProps }) => {
         placeholder={mask}
         {...inputProps}
       />
-      <div className="controls">
+      <div className='controls'>
         <button onClick={() => inputMask?.setValue('')}>Clean</button>
         <button onClick={() => inputMask?.setValue('0'.repeat(99))}>Fill by zero</button>
       </div>
     </div>
   );
 };
-
-const Demo = ({ mask, label }) => (
-  <div className='demo-block'>
-    {label && (<label>{label}</label>)}
-    <MaskedInput maskOptions={{ mask }} placeholder={mask} />
-  </div>
-);
-
-const DemoStateful = () => {
-  const [value, setValue] = useState('');
-  const [variantIndex, setVariantIndex] = useState(0);
-
-  const { mask, label } = variants[variantIndex];
-
-  return (
-    <div className='demo-block'>
-      {label && (<label>{label} (clean: "{value}")</label>)}
-      <MaskedInput
-        maskOptions={{ mask }}
-        value={value}
-        onChange={({ cleanValue }) => setValue(cleanValue)}
-        placeholder={mask}
-      />
-      <div className="controls">
-        <button onClick={() => setValue('')}>Clean</button>
-        <button onClick={() => setVariantIndex((variantIndex + 1) % variants.length)}>Change mask</button>
-      </div>
-    </div>
-  );
-};
-
-const MaskedInput = MaskMixin(props => (<input {...props} />));
