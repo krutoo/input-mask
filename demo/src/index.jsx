@@ -31,7 +31,7 @@ const variants = [
 
 const App = () => (
   <>
-    <h3 data-primary>Vanilla JS solution</h3>
+    <h2>JS input masks lib demo</h2>
     {variants.map((variant, i) => (
       <DemoVanilla key={i} {...variant} />
     ))}
