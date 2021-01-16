@@ -2,19 +2,10 @@
 
 JavaScript lib for making static masked inputs
 
-## What is it?
-
-This package also contains parts for build your own solution to provide input masking.
-
-There is a several functions:
-
-- `createReducer`: returns reducer which takes *input state* and *change action* and returns the *new state*
-- `defineChanges`: takes *current state* and *next state* and returns *change action*
-
-## Goals
+## Features
 
 - only static masks (fixed number of characters)
-- able to work with pure DOM inputs
+- working with pure DOM inputs
 - able to make solutions for React/Vue/Angular based on this library
 
 ## Usage
@@ -53,6 +44,15 @@ inputMask.setValue('00000000000');
 // disables masking on element
 inputMask.disable();
 ```
+
+## Advanced usage
+
+This package also contains parts for build your own solution to provide input masking.
+
+There is a several functions:
+
+- `createReducer`: returns reducer which takes *input state* and *change action* and returns the *new state*
+- `defineChanges`: takes *current state* and *next state* and returns *change action*
 
 ## To Do
 
