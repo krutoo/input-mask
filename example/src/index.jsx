@@ -43,12 +43,7 @@ const DemoVanilla = ({ mask, label, ...inputProps }) => {
   const ref = useRef();
 
   useEffect(() => {
-    const im = InputMask(ref.current, {
-      mask,
-      onChange: data => {
-        console.log(data);
-      },
-    });
+    const im = InputMask(ref.current, { mask });
 
     setInputMask(im);
 
@@ -64,8 +59,12 @@ const DemoVanilla = ({ mask, label, ...inputProps }) => {
         {...inputProps}
       />
       <div className='controls'>
-        <button onClick={() => inputMask?.setValue('')}>Clean</button>
-        <button onClick={() => inputMask?.setValue('0'.repeat(99))}>Fill by zero</button>
+        <button type='button' onClick={() => inputMask?.setValue('')}>
+          Clean
+        </button>
+        <button type='button' onClick={() => inputMask?.setValue('0'.repeat(99))}>
+          Fill by zero
+        </button>
       </div>
     </div>
   );

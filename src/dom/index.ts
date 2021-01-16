@@ -5,11 +5,11 @@ type Data = {
   value: string
   cleanValue: string
   ready: boolean
-}
+};
 
 type Options = Partial<ReducerOptions> & {
   onChange?: (data: Data) => void
-}
+};
 
 const reducerDefaults = {
   mask: '____',
@@ -17,7 +17,10 @@ const reducerDefaults = {
   pattern: /\d/,
 };
 
-export const InputMask = (element: HTMLInputElement, { onChange, ...reducerOptions }: Options = {}) => {
+export const InputMask = (
+  element: HTMLInputElement,
+  { onChange, ...reducerOptions }: Options = {},
+) => {
   const options = { ...reducerDefaults, ...reducerOptions };
   const reducer = createReducer(options);
   const process = (a: InputState, b: InputState) => reducer(a, defineChanges(a, b));
@@ -59,7 +62,7 @@ export const InputMask = (element: HTMLInputElement, { onChange, ...reducerOptio
 
       state = process(
         State.of(state.value, Range.of(firstPlace, state.value.length)),
-        State.of(newMaskedValue)
+        State.of(newMaskedValue),
       );
 
       State.apply(state, element);

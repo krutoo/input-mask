@@ -20,8 +20,10 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
         type = 'INSERT';
       }
     } else {
-      const carvedPart = prev.value.slice(prev.range.head, prev.range.last);
-      const restored = next.value.slice(0, prev.range.head) + carvedPart + next.value.slice(prev.range.head);
+      const carved = prev.value.slice(prev.range.head, prev.range.last);
+      const restored = next.value.slice(0, prev.range.head)
+        + carved
+        + next.value.slice(prev.range.head);
 
       if (
         restored === prev.value
@@ -47,7 +49,7 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
       };
       break;
 
-    case 'DELETE':
+    case 'DELETE': {
       let deleteIndices: number[] = [];
 
       if (Range.size(prev.range) === 0) {
@@ -56,7 +58,10 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
           // удалили после каретки (aka delete)
           const delta = prev.value.length - next.value.length;
 
-          deleteIndices = Range.spreadOf(prev.range.head, prev.range.head + delta);
+          deleteIndices = Range.spreadOf(
+            prev.range.head,
+            prev.range.head + delta,
+          );
         } else {
           // удалили перед кареткой (aka backspace)
           deleteIndices = Range.spreadOf(next.range.head, prev.range.head);
@@ -72,6 +77,7 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
         deleteDirection: next.range.head < prev.range.head ? 'backward' : 'forward',
       };
       break;
+    }
 
     case 'REPLACE':
       if (hasChanges) {
@@ -93,7 +99,7 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
       }
       break;
 
-    case 'UNKNOWN':
+    default:
       payload = { ...next };
       break;
   }

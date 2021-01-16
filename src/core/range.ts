@@ -11,7 +11,7 @@ export const Range = {
 
   clone: (r: IRange): IRange => ({ ...r }),
 
-  map: (r: IRange, cb: (n: number) => number): IRange => Range.of(cb(r.head),cb(r.last)),
+  map: (r: IRange, cb: (n: number) => number): IRange => Range.of(cb(r.head), cb(r.last)),
 
   equals: (a: IRange, b: IRange): boolean => a.head === b.head && a.last === b.last,
 

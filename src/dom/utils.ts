@@ -5,7 +5,7 @@ export const on = (
   target: EventTarget,
   eventName: string,
   callback: EventListenerOrEventListenerObject,
-  options?: EventListenerOptions
+  options?: EventListenerOptions,
 ) => {
   target.addEventListener(eventName, callback, options);
 
@@ -16,7 +16,10 @@ export const on = (
 
 export const Range = {
   ...CoreRange,
-  fromTarget: (target: HTMLInputElement) => Range.of(target.selectionStart || 0, target.selectionEnd || 0),
+  fromTarget: (target: HTMLInputElement) => Range.of(
+    target.selectionStart || 0,
+    target.selectionEnd || 0,
+  ),
 };
 
 export const State = {
