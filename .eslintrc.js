@@ -9,7 +9,8 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
     project: [
-      './tsconfig.eslint.json',
+      './tsconfig.json',
+      './tsconfig.jest.json',
     ],
   },
   plugins: [

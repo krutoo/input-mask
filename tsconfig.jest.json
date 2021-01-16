@@ -4,5 +4,11 @@
     "types": [
       "jest"
     ]
-  }
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
