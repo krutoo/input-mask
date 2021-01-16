@@ -4,15 +4,8 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: [
-    'plugin:react/recommended',
-    'airbnb-typescript',
-  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
     ecmaVersion: 12,
     sourceType: 'module',
     project: [
@@ -20,7 +13,6 @@ module.exports = {
     ],
   },
   plugins: [
-    'react',
     '@typescript-eslint',
   ],
   rules: {
@@ -53,12 +45,7 @@ module.exports = {
       props: false,
     }],
     'import/no-extraneous-dependencies': 'off',
-    'react/no-array-index-key': 'off',
-    'react/prop-types': 'off',
-    'react/jsx-props-no-spreading': 'off',
     'jsx-quotes': ['error', 'prefer-single'],
     'max-len': ['error', 100],
-    'react/button-has-type': ['error'],
-    'jsx-a11y/label-has-associated-control': 'off',
   },
 };
