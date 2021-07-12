@@ -34,7 +34,12 @@ export const State = {
 
   apply: (state: InputState, target: HTMLInputElement) => {
     target.value = state.value;
-    target.setSelectionRange(state.range.head, state.range.last);
+
+    // в Safari при вызове setSelectionRange поле получает фокус - проверяем необходимость установки
+    document.activeElement === target && target.setSelectionRange(
+      state.range.head,
+      state.range.last
+    );
   },
 };
 
