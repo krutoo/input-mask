@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { render } from 'react-dom';
 import { InputMask } from '../../src/dom';
-import './index.css';
 
 window.addEventListener('DOMContentLoaded', () => {
   render(<App />, document.querySelector('#root'));
@@ -52,17 +51,16 @@ const DemoVanilla = ({ mask, label, ...inputProps }) => {
 
   return (
     <div className='demo-block'>
-      {label && (<label>{label}</label>)}
-      <input
-        ref={ref}
-        placeholder={mask}
-        {...inputProps}
-      />
+      {label && <label>{label}</label>}
+      <input ref={ref} placeholder={mask} {...inputProps} />
       <div className='controls'>
         <button type='button' onClick={() => inputMask?.setValue('')}>
           Clean
         </button>
-        <button type='button' onClick={() => inputMask?.setValue('0'.repeat(99))}>
+        <button
+          type='button'
+          onClick={() => inputMask?.setValue('0'.repeat(99))}
+        >
           Fill by zero
         </button>
       </div>
