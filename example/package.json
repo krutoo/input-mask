@@ -10,7 +10,8 @@
   "author": "Dmitry Petrov",
   "license": "MIT",
   "devDependencies": {
-    "parcel": "^2.0.0-rc.0"
+    "parcel": "^2.8.0",
+    "process": "^0.11.10"
   },
   "dependencies": {
     "react": "^17.0.2",
