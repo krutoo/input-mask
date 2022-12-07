@@ -20,14 +20,13 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
         type = 'INSERT';
       }
     } else {
-      const carved = prev.value.slice(prev.range.head, prev.range.last);
-      const restored = next.value.slice(0, prev.range.head)
-        + carved
-        + next.value.slice(prev.range.head);
+      const carved = prev.value.slice(prev.range.start, prev.range.end);
+      const restored =
+        next.value.slice(0, prev.range.start) + carved + next.value.slice(prev.range.start);
 
       if (
-        restored === prev.value
-        || (Range.size(prev.range) === 0 && Range.size(next.range) === 0)
+        restored === prev.value ||
+        (Range.size(prev.range) === 0 && Range.size(next.range) === 0)
       ) {
         type = 'DELETE';
       } else {
@@ -44,8 +43,8 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
     case 'INSERT':
       payload = {
         ...next,
-        insertPosition: prev.range.head,
-        insertIndices: Range.spreadOf(prev.range.head, next.range.last),
+        insertPosition: prev.range.start,
+        insertIndices: Range.spreadOf(prev.range.start, next.range.end),
       };
       break;
 
@@ -54,27 +53,24 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
 
       if (Range.size(prev.range) === 0) {
         // удалили какую-то часть текста (delete forward/backward, hard/soft...)
-        if (next.range.head === prev.range.head) {
+        if (next.range.start === prev.range.start) {
           // удалили после каретки (aka delete)
           const delta = prev.value.length - next.value.length;
 
-          deleteIndices = Range.spreadOf(
-            prev.range.head,
-            prev.range.head + delta,
-          );
+          deleteIndices = Range.spreadOf(prev.range.start, prev.range.start + delta);
         } else {
           // удалили перед кареткой (aka backspace)
-          deleteIndices = Range.spreadOf(next.range.head, prev.range.head);
+          deleteIndices = Range.spreadOf(next.range.start, prev.range.start);
         }
       } else {
         // просто вырезали выделенную часть
-        deleteIndices = Range.spreadOf(prev.range.head, prev.range.last);
+        deleteIndices = Range.spreadOf(prev.range.start, prev.range.end);
       }
 
       payload = {
         ...next,
         deleteIndices,
-        deleteDirection: next.range.head < prev.range.head ? 'backward' : 'forward',
+        deleteDirection: next.range.start < prev.range.start ? 'backward' : 'forward',
       };
       break;
     }
@@ -84,15 +80,15 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
         // заменили выделенную часть
         payload = {
           ...next,
-          replacePosition: prev.range.head,
+          replacePosition: prev.range.start,
           deleteIndices: Range.spread(prev.range),
-          insertIndices: Range.spreadOf(prev.range.head, next.range.last),
+          insertIndices: Range.spreadOf(prev.range.start, next.range.end),
         };
       } else {
         // вставили то же самое что уже было введено
         payload = {
           ...next,
-          replacePosition: prev.range.head,
+          replacePosition: prev.range.start,
           deleteIndices: Range.spread(prev.range),
           insertIndices: Range.spread(prev.range),
         };

@@ -1,27 +1,33 @@
 export interface IRange {
-  head: number
-  last: number
+  start: number;
+  end: number;
+
+  /** @deprecated Use "start" instead. */
+  head: number;
+
+  /** @deprecated Use "end" instead. */
+  last: number;
 }
 
 /**
  * Работа с числовыми диапазонами.
  */
 export const Range = {
-  of: (head: number, last = head): IRange => ({ head, last }),
+  of: (start: number, end = start): IRange => ({ start, end, head: start, last: end }),
 
   clone: (r: IRange): IRange => ({ ...r }),
 
-  map: (r: IRange, cb: (n: number) => number): IRange => Range.of(cb(r.head), cb(r.last)),
+  map: (r: IRange, cb: (n: number) => number): IRange => Range.of(cb(r.start), cb(r.end)),
 
-  equals: (a: IRange, b: IRange): boolean => a.head === b.head && a.last === b.last,
+  equals: (a: IRange, b: IRange): boolean => a.start === b.start && a.end === b.end,
 
-  size: (r: IRange) => Math.max(r.head, r.last) - Math.min(r.head, r.last),
+  size: (r: IRange) => Math.max(r.start, r.end) - Math.min(r.start, r.end),
 
   spread: (r: IRange): number[] => {
     const result = [];
 
-    if (r.head !== r.last) {
-      for (let i = r.head; i < r.last; i++) {
+    if (r.start !== r.end) {
+      for (let i = r.start; i < r.end; i++) {
         result.push(i);
       }
     }
@@ -29,5 +35,5 @@ export const Range = {
     return result;
   },
 
-  spreadOf: (head: number, last: number) => Range.spread(Range.of(head, last)),
+  spreadOf: (start: number, end: number) => Range.spread(Range.of(start, end)),
 };

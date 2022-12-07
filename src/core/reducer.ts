@@ -37,32 +37,31 @@ export type ReplaceAction = BaseAction<
   }
 >;
 
-export type ChangeAction =
-  | InsertAction
-  | DeleteAction
-  | ReplaceAction
-  | UnknownAction;
+export type ChangeAction = InsertAction | DeleteAction | ReplaceAction | UnknownAction;
 
-type Reducer = (state: InputState, action: ChangeAction) => InputState;
+interface Reducer {
+  (state: InputState | undefined, action: ChangeAction): InputState;
+}
 
-export type ReducerOptions = {
+export interface ReducerOptions {
   mask: string;
   pattern: RegExp;
   placeholder: string;
-};
+}
 
-export const createReducer = ({
-  mask,
-  pattern,
-  placeholder,
-}: ReducerOptions): Reducer => {
+// @todo fix caret position: "+|7 (" with paste "(111) 222-33-44"
+export const createReducer = ({ mask, pattern, placeholder }: ReducerOptions): Reducer => {
   const placeIndices = mask.split('').reduce((acc: number[], char, i) => {
     char === placeholder && acc.push(i);
     return acc;
   }, []);
 
   const Char = {
-    isValid: (c: string) => pattern.test(c),
+    isValid: (c: string): boolean => {
+      // @todo reset regexp state OR clone regexp and not mutate given regexp (better)
+      // pattern.lastIndex = 0;
+      return pattern.test(c);
+    },
   };
 
   const Index = {
@@ -73,11 +72,7 @@ export const createReducer = ({
     getNearestPlace: (i: number, forward = true) => {
       let result = i;
 
-      while (
-        result >= 0 &&
-        result <= mask.length &&
-        !placeIndices.includes(result)
-      ) {
+      while (result >= 0 && result <= mask.length && !placeIndices.includes(result)) {
         result += forward ? 1 : -1;
       }
 
@@ -85,22 +80,15 @@ export const createReducer = ({
     },
   };
 
-  const handleInsert = (
-    state: InputState,
-    payload: InsertAction['payload']
-  ): InputState => {
+  const handleInsert = (state: InputState, payload: InsertAction['payload']): InputState => {
     const cleanChars = getCleanChars(state.value);
     const insertIndex = Index.getNearestPlace(payload.insertPosition);
-    const insertChars = payload.insertIndices
-      .map(i => payload.value[i])
-      .filter(Char.isValid);
+    const insertChars = payload.insertIndices.map(i => payload.value[i]).filter(Char.isValid);
 
     let { range } = payload;
 
     if (insertIndex !== -1) {
-      const nextCaretPosition = Index.toMasked(
-        insertIndex + insertChars.length
-      );
+      const nextCaretPosition = Index.toMasked(insertIndex + insertChars.length);
 
       cleanChars.splice(insertIndex, 0, ...insertChars);
       if (nextCaretPosition) {
@@ -111,16 +99,11 @@ export const createReducer = ({
     return { ...state, range, value: toMasked(cleanChars) };
   };
 
-  const handleDelete = (
-    state: InputState,
-    payload: DeleteAction['payload']
-  ): InputState => {
+  const handleDelete = (state: InputState, payload: DeleteAction['payload']): InputState => {
     const cleanChars = getCleanChars(state.value);
     const isForward = payload.deleteDirection === 'forward';
-    const deleteIndex = Index.getNearestPlace(payload.range.head, isForward);
-    const range = Range.of(
-      Math.max(placeIndices[0], Index.toMasked(deleteIndex) || 0)
-    );
+    const deleteIndex = Index.getNearestPlace(payload.range.start, isForward);
+    const range = Range.of(Math.max(placeIndices[0], Index.toMasked(deleteIndex) || 0));
 
     let deleteCount = payload.deleteIndices.filter(Index.isPlace).length;
 
@@ -130,24 +113,20 @@ export const createReducer = ({
 
     if (deleteIndex !== -1) {
       cleanChars.splice(deleteIndex, deleteCount);
-    } else if (state.range.head > placeIndices[0] && !isForward) {
+    } else if (state.range.start > placeIndices[0] && !isForward) {
       cleanChars.splice(0, deleteCount);
     }
 
     return { ...state, range, value: toMasked(cleanChars) };
   };
 
-  const handleReplace = (
-    state: InputState,
-    payload: ReplaceAction['payload']
-  ): InputState => {
+  const handleReplace = (state: InputState, payload: ReplaceAction['payload']): InputState => {
     // ничего не изменилось - просто переносим каретку в конец
     if (state.value === payload.value) {
       return {
         ...state,
         range: Range.of(
-          Index.toMasked(Index.getNearestPlace(payload.range.last)) ||
-            state.value.length
+          Index.toMasked(Index.getNearestPlace(payload.range.end)) || state.value.length
         ),
       };
     }
@@ -155,18 +134,14 @@ export const createReducer = ({
     const cleanChars = getCleanChars(state.value);
     const replaceIndex = Index.getNearestPlace(payload.replacePosition);
     const carvedIndices = payload.deleteIndices.filter(Index.isPlace);
-    const addedValidChars = payload.insertIndices
-      .map(i => payload.value[i])
-      .filter(Char.isValid);
+    const addedValidChars = payload.insertIndices.map(i => payload.value[i]).filter(Char.isValid);
 
     if (replaceIndex !== -1) {
       cleanChars.splice(replaceIndex, carvedIndices.length, ...addedValidChars);
     }
 
     const value = toMasked(cleanChars);
-    const range = Range.of(
-      Index.toMasked(replaceIndex + addedValidChars.length) || value.length
-    );
+    const range = Range.of(Index.toMasked(replaceIndex + addedValidChars.length) || value.length);
 
     return { ...state, range, value };
   };
@@ -205,7 +180,12 @@ export const createReducer = ({
     range: Range.map(state.range, n => Math.min(n, state.value.length)),
   });
 
-  return (state, action: ChangeAction) => {
+  const initialState: InputState = {
+    value: '',
+    range: Range.of(0, 0),
+  };
+
+  return (state = initialState, action: ChangeAction) => {
     let nextState = state;
 
     switch (action.type) {
