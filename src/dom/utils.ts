@@ -1,7 +1,7 @@
 import { InputState, ReducerOptions } from '../core/reducer';
 import { Range as CoreRange, IRange } from '../core/range';
 
-export function on<E extends Event, T extends EventTarget>(
+export function on<E extends Event = Event, T extends EventTarget = EventTarget>(
   target: T,
   eventName: string,
   callback: (event: E & { currentTarget: T }) => void,
@@ -39,7 +39,22 @@ export const State = {
 
   apply(state: InputState, target: HTMLInputElement): void {
     target.value = state.value;
+    State.applySelection(state, target);
+  },
 
+  applyDiff(state: InputState, target: HTMLInputElement) {
+    if (target.value !== state.value) {
+      target.value = state.value;
+      State.applySelection(state, target);
+    } else if (
+      target.selectionStart !== state.range.start ||
+      target.selectionEnd !== state.range.end
+    ) {
+      State.applySelection(state, target);
+    }
+  },
+
+  applySelection(state: InputState, target: HTMLInputElement) {
     // в Safari поле получает фокус при вызове setSelectionRange - проверяем необходимость установки
     if (target === document.activeElement) {
       target.setSelectionRange(state.range.start, state.range.end);
