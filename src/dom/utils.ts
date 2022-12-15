@@ -63,7 +63,7 @@ export const State = {
 } as const;
 
 export const Value = {
-  toMasked({ mask, placeholder }: Omit<ReducerOptions, 'pattern'>, cleanValue: string) {
+  cleanToMasked({ mask, placeholder }: Omit<ReducerOptions, 'pattern'>, cleanValue: string) {
     let result = '';
 
     for (let i = 0, j = 0; i < mask.length; i++) {
@@ -78,7 +78,7 @@ export const Value = {
     return result;
   },
 
-  toClean({ mask, placeholder }: Omit<ReducerOptions, 'pattern'>, maskedValue: string) {
+  maskedToClean({ mask, placeholder }: Omit<ReducerOptions, 'pattern'>, maskedValue: string) {
     let result = '';
 
     for (let i = 0; i < maskedValue.length; i++) {
@@ -88,5 +88,19 @@ export const Value = {
     }
 
     return result;
+  },
+
+  /**
+   * @deprecated Use "cleanToMasked" instead.
+   */
+  toMasked(maskOptions: Omit<ReducerOptions, 'pattern'>, maskedValue: string) {
+    return Value.cleanToMasked(maskOptions, maskedValue);
+  },
+
+  /**
+   * @deprecated Use "maskedToClean" instead.
+   */
+  toClean(maskOptions: Omit<ReducerOptions, 'pattern'>, maskedValue: string) {
+    return Value.maskedToClean(maskOptions, maskedValue);
   },
 } as const;

@@ -18,7 +18,7 @@ npm install --save @krutoo/input-mask
 
 Usage:
 
-```js
+```ts
 import { InputMask } from '@krutoo/input-mask/dist/dom';
 
 const input = document.querySelector('input#phone');
@@ -28,15 +28,15 @@ const inputMask = InputMask(input, {
   placeholder: '_',
   pattern: /\d/,
 
-  onChange: ({ value, cleanValue, ready }) => {
-    // value is string with masked value
-    // cleanValue is string only writable characters
-    // ready is boolean which shows that the mask is completely filled
+  onInput: ({ value, cleanValue, completed }) => {
+    // "value" is string with masked value
+    // "cleanValue" is string only writable characters
+    // "completed" is boolean which shows that the mask is completely filled
   },
 });
 
 // returns actual state of input
-const { value, cleanValue, ready } = inputMask.getData();
+const { value, cleanValue, completed } = inputMask.getData();
 
 // sets value manually
 inputMask.setValue('00000000000');
@@ -51,8 +51,8 @@ This package also contains parts for build your own solution to provide input ma
 
 There is a several functions:
 
-- `createReducer`: returns reducer which takes *input state* and *change action* and returns the *new state*
-- `defineChanges`: takes *current state* and *next state* and returns *change action*
+- `createReducer`: returns reducer which takes _input state_ and _change action_ and returns the _new state_
+- `defineChanges`: takes _current state_ and _next state_ and returns _change action_
 
 ## To Do
 

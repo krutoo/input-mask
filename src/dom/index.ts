@@ -45,7 +45,7 @@ export function InputMask(
 
     return {
       value: state.value,
-      cleanValue: Value.toClean(options, state.value),
+      cleanValue: Value.maskedToClean(options, state.value),
       completed,
       ready: completed,
     };
@@ -70,10 +70,16 @@ export function InputMask(
   return {
     getData,
 
-    setValue(value: string) {
+    setValue(cleanValue: string) {
       if (!enabled) return;
 
-      const newMaskedValue = Value.toMasked(options, value);
+      // мы не знаем какое значение передано (clean или masked) поэтому берем из него только подходящие символы
+      const validCleanValue = cleanValue
+        .split('')
+        .filter(c => c.match(options.pattern))
+        .join('');
+
+      const newMaskedValue = Value.cleanToMasked(options, validCleanValue);
       const firstPlace = options.mask.indexOf(options.placeholder);
 
       state = process(
