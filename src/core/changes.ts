@@ -1,5 +1,5 @@
-import { Range } from './range';
-import { ChangeAction, InputState } from './reducer';
+import { Range } from './range.ts';
+import { ChangeAction, InputState } from './reducer.ts';
 
 /**
  * Получив предыдущее и новое состояния текстового поля определит тип изменений.
@@ -21,8 +21,8 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
       }
     } else {
       const carved = prev.value.slice(prev.range.start, prev.range.end);
-      const restored =
-        next.value.slice(0, prev.range.start) + carved + next.value.slice(prev.range.start);
+      const restored = next.value.slice(0, prev.range.start) + carved +
+        next.value.slice(prev.range.start);
 
       if (
         restored === prev.value ||

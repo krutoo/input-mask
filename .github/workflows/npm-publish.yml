@@ -12,7 +12,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
@@ -20,8 +20,7 @@ jobs:
 
       - name: Lint
         run: |
-          npm run lint
-          npm run type-check
+          npm run check
 
       - name: Test
         run: npm run test
@@ -29,7 +28,6 @@ jobs:
       - name: Build package
         run: |
           npm --no-git-tag-version version ${GITHUB_REF#refs/*/}
-          npm pkg delete scripts.prepare
           npm run build
 
       - name: Publish build

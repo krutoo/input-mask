@@ -1,5 +1,5 @@
-import { createReducer, defineChanges, InputState, ReducerOptions } from '../core';
-import { on, State, Value, Range } from './utils';
+import { createReducer, defineChanges, InputState, ReducerOptions } from '../core/mod.ts';
+import { Range, State, Value } from './utils.ts';
 
 interface Data {
   value: string;
@@ -31,7 +31,11 @@ export interface InputMaskControl {
 
 export function InputMask(
   element: HTMLInputElement,
-  { onChange, onInput, ...reducerOptions }: Options = {}
+  {
+    onChange,
+    onInput,
+    ...reducerOptions
+  }: Options = {},
 ): InputMaskControl {
   const options = { ...reducerDefaults, ...reducerOptions };
   const reducer = createReducer(options);
@@ -53,19 +57,21 @@ export function InputMask(
 
   State.apply(state, element);
 
-  const offList: VoidFunction[] = [
-    on(document, 'selectionchange', () => {
-      if (element === document.activeElement) {
-        state = State.fromTarget(element);
-      }
-    }),
-    on(element, 'input', () => {
-      state = process(state, State.fromTarget(element));
-      State.apply(state, element);
-      onInput?.(getData());
-      onChange?.(getData());
-    }),
-  ];
+  const onDocumentSelectionChange = () => {
+    if (element === document.activeElement) {
+      state = State.fromTarget(element);
+    }
+  };
+
+  const onElementInput = () => {
+    state = process(state, State.fromTarget(element));
+    State.apply(state, element);
+    onInput?.(getData());
+    onChange?.(getData());
+  };
+
+  document.addEventListener('selectionchange', onDocumentSelectionChange);
+  element.addEventListener('input', onElementInput);
 
   return {
     getData,
@@ -76,7 +82,7 @@ export function InputMask(
       // мы не знаем какое значение передано (clean или masked) поэтому берем из него только подходящие символы
       const validCleanValue = cleanValue
         .split('')
-        .filter(c => c.match(options.pattern))
+        .filter((c) => c.match(options.pattern))
         .join('');
 
       const newMaskedValue = Value.cleanToMasked(options, validCleanValue);
@@ -84,7 +90,7 @@ export function InputMask(
 
       state = process(
         State.of(state.value, Range.of(firstPlace, state.value.length)),
-        State.of(newMaskedValue, Range.of(newMaskedValue.length))
+        State.of(newMaskedValue, Range.of(newMaskedValue.length)),
       );
 
       State.apply(state, element);
@@ -93,7 +99,8 @@ export function InputMask(
 
     disable() {
       enabled = false;
-      offList.forEach(fn => fn());
+      document.removeEventListener('selectionchange', onDocumentSelectionChange);
+      element.removeEventListener('input', onElementInput);
     },
   };
 }

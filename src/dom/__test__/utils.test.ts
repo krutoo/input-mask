@@ -1,5 +1,7 @@
-import { ReducerOptions } from '../../core/reducer';
-import { Value } from '../utils';
+import { describe, test } from '@std/testing/bdd';
+import { expect } from '@std/expect';
+import { ReducerOptions } from '../../core/reducer.ts';
+import { Value } from '../utils.ts';
 
 describe('Value', () => {
   test('toClean', () => {
