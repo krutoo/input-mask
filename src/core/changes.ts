@@ -1,5 +1,5 @@
 import { Range } from './range.ts';
-import { ChangeAction, InputState } from './reducer.ts';
+import type { ChangeAction, InputState } from './reducer.ts';
 
 /**
  * Получив предыдущее и новое состояния текстового поля определит тип изменений.

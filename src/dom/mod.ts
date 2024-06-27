@@ -1,4 +1,4 @@
-import { createReducer, defineChanges, InputState, ReducerOptions } from '../core/mod.ts';
+import { createReducer, defineChanges, type InputState, type ReducerOptions } from '../core/mod.ts';
 import { Range, State, Value } from './utils.ts';
 
 interface Data {

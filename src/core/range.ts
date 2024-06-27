@@ -35,5 +35,5 @@ export const Range = {
     return result;
   },
 
-  spreadOf: (start: number, end: number) => Range.spread(Range.of(start, end)),
+  spreadOf: (start: number, end: number): number[] => Range.spread(Range.of(start, end)),
 };

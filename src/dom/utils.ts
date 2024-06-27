@@ -1,5 +1,5 @@
-import { InputState, ReducerOptions } from '../core/reducer.ts';
-import { IRange, Range as CoreRange } from '../core/range.ts';
+import type { InputState, ReducerOptions } from '../core/reducer.ts';
+import { type IRange, Range as CoreRange } from '../core/range.ts';
 
 export const Range = {
   ...CoreRange,

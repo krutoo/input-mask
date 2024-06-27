@@ -1,4 +1,4 @@
-import { IRange, Range } from './range.ts';
+import { type IRange, Range } from './range.ts';
 
 export interface InputState {
   range: IRange;
