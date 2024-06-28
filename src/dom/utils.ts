@@ -1,18 +1,5 @@
-import { InputState, ReducerOptions } from '../core/reducer';
-import { Range as CoreRange, IRange } from '../core/range';
-
-export function on<E extends Event = Event, T extends EventTarget = EventTarget>(
-  target: T,
-  eventName: string,
-  callback: (event: E & { currentTarget: T }) => void,
-  options?: EventListenerOptions
-) {
-  target.addEventListener(eventName, callback as any, options);
-
-  return () => {
-    target.removeEventListener(eventName, callback as any, options);
-  };
-}
+import type { InputState, ReducerOptions } from '../core/reducer.ts';
+import { type IRange, Range as CoreRange } from '../core/range.ts';
 
 export const Range = {
   ...CoreRange,
@@ -63,7 +50,10 @@ export const State = {
 } as const;
 
 export const Value = {
-  cleanToMasked({ mask, placeholder }: Omit<ReducerOptions, 'pattern'>, cleanValue: string) {
+  cleanToMasked(
+    { mask, placeholder }: Omit<ReducerOptions, 'pattern'>,
+    cleanValue: string,
+  ) {
     let result = '';
 
     for (let i = 0, j = 0; i < mask.length; i++) {
@@ -78,7 +68,10 @@ export const Value = {
     return result;
   },
 
-  maskedToClean({ mask, placeholder }: Omit<ReducerOptions, 'pattern'>, maskedValue: string) {
+  maskedToClean(
+    { mask, placeholder }: Omit<ReducerOptions, 'pattern'>,
+    maskedValue: string,
+  ) {
     let result = '';
 
     for (let i = 0; i < maskedValue.length; i++) {

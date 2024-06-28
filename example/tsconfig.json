@@ -1,19 +1,13 @@
 {
   "compilerOptions": {
-    "strict": true,
-    "sourceMap": true,
-    "outDir": "./dist/",
-    "module": "ES6",
-    "target": "ES2020",
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
     "jsx": "react-jsx",
-    "allowJs": true,
-    "moduleResolution": "node",
-    "types": []
+    "strict": true,
+    "skipLibCheck": true,
   },
-  "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

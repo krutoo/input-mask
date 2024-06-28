@@ -1,9 +1,11 @@
-import { defineChanges } from '../changes';
-import { Range } from '../range';
+import { describe, test } from '@std/testing/bdd';
+import { expect } from '@std/expect';
+import { defineChanges } from '../changes.ts';
+import { Range } from '../range.ts';
 
 describe('defineChanges()', () => {
   describe('insert cases', () => {
-    it('insertion to empty field', () => {
+    test('insertion to empty field', () => {
       const prev = { value: '', range: Range.of(0) };
       const next = { value: 'text', range: Range.of(4, 4) };
 
@@ -17,7 +19,7 @@ describe('defineChanges()', () => {
       });
     });
 
-    it('insertion to end of non empty field', () => {
+    test('insertion to end of non empty field', () => {
       const prev = { value: 'foo', range: Range.of(3) };
       const next = { value: 'foobar', range: Range.of(6, 6) };
 
@@ -31,7 +33,7 @@ describe('defineChanges()', () => {
       });
     });
 
-    it('insertion to start of non empty field', () => {
+    test('insertion to start of non empty field', () => {
       const prev = { value: 'foo', range: Range.of(0) };
       const next = { value: 'barfoo', range: Range.of(3, 3) };
 
@@ -45,7 +47,7 @@ describe('defineChanges()', () => {
       });
     });
 
-    it('insertion to middle of non empty field', () => {
+    test('insertion to middle of non empty field', () => {
       const prev = { value: 'foobaz', range: Range.of(3) };
       const next = { value: 'foobarbaz', range: Range.of(6, 6) };
 
@@ -62,7 +64,7 @@ describe('defineChanges()', () => {
 
   describe('delete cases', () => {
     describe('delete backward cases', () => {
-      it('delete from end: soft', () => {
+      test('delete from end: soft', () => {
         const prev = { value: 'text', range: Range.of(4) };
         const next = { value: 'tex', range: Range.of(3) };
 
@@ -76,7 +78,7 @@ describe('defineChanges()', () => {
         });
       });
 
-      it('delete from end: hard', () => {
+      test('delete from end: hard', () => {
         const prev = { value: 'text', range: Range.of(4) };
         const next = { value: '', range: Range.of(0) };
 
@@ -90,7 +92,7 @@ describe('defineChanges()', () => {
         });
       });
 
-      it('delete from middle: soft', () => {
+      test('delete from middle: soft', () => {
         const prev = { value: 'abcdef', range: Range.of(4) };
         const next = { value: 'abcef', range: Range.of(3) };
 
@@ -104,7 +106,7 @@ describe('defineChanges()', () => {
         });
       });
 
-      it('delete from middle: hard', () => {
+      test('delete from middle: hard', () => {
         const prev = { value: 'abcdef', range: Range.of(4) };
         const next = { value: 'ef', range: Range.of(0) };
 
@@ -120,7 +122,7 @@ describe('defineChanges()', () => {
     });
 
     describe('delete forward cases', () => {
-      it('delete from start: soft', () => {
+      test('delete from start: soft', () => {
         const prev = { value: 'abcdef', range: Range.of(0) };
         const next = { value: 'bcdef', range: Range.of(0) };
 
@@ -134,7 +136,7 @@ describe('defineChanges()', () => {
         });
       });
 
-      it('delete from start: hard', () => {
+      test('delete from start: hard', () => {
         const prev = { value: 'abcdef', range: Range.of(0) };
         const next = { value: '', range: Range.of(0) };
 
@@ -148,7 +150,7 @@ describe('defineChanges()', () => {
         });
       });
 
-      it('delete from middle: soft', () => {
+      test('delete from middle: soft', () => {
         const prev = { value: 'abcdef', range: Range.of(3) };
         const next = { value: 'abcef', range: Range.of(3) };
 
@@ -162,7 +164,7 @@ describe('defineChanges()', () => {
         });
       });
 
-      it('delete from middle: hard', () => {
+      test('delete from middle: hard', () => {
         const prev = { value: 'abcdef', range: Range.of(3) };
         const next = { value: 'abc', range: Range.of(3) };
 

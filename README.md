@@ -19,7 +19,7 @@ npm install --save @krutoo/input-mask
 Usage:
 
 ```ts
-import { InputMask } from '@krutoo/input-mask/dist/dom';
+import { InputMask } from '@krutoo/input-mask/dom';
 
 const input = document.querySelector('input#phone');
 
