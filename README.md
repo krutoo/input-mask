@@ -13,7 +13,7 @@ JavaScript lib for making static masked inputs
 Installing:
 
 ```bash
-npm install --save @krutoo/input-mask
+npm add @krutoo/input-mask
 ```
 
 Usage:
@@ -51,7 +51,8 @@ This package also contains parts for build your own solution to provide input ma
 
 There is a several functions:
 
-- `createReducer`: returns reducer which takes _input state_ and _change action_ and returns the _new state_
+- `createReducer`: returns reducer which takes _input state_ and _change action_ and returns the
+  _new state_
 - `defineChanges`: takes _current state_ and _next state_ and returns _change action_
 
 ## To Do
