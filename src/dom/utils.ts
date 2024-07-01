@@ -1,59 +1,55 @@
-import type { InputState, ReducerOptions } from '../core/reducer.ts';
-import { type IRange, Range as CoreRange } from '../core/range.ts';
+import type { InputState, ReducerOptions } from '../core/mod.ts';
+import { type Range, RangeUtil } from '../core/mod.ts';
 
-export const Range = {
-  ...CoreRange,
+export function rangeFromTarget(target: HTMLInputElement): Range {
+  return RangeUtil.of(target.selectionStart || 0, target.selectionEnd || 0);
+}
 
-  fromTarget(target: HTMLInputElement) {
-    return Range.of(target.selectionStart || 0, target.selectionEnd || 0);
-  },
-};
-
-export const State = {
-  of(value: string, range: IRange = Range.of(value.length)): InputState {
+export abstract class StateUtil {
+  static of(value: string, range: Range = RangeUtil.of(value.length)): InputState {
     return { value, range };
-  },
+  }
 
-  init({ mask, placeholder }: Omit<ReducerOptions, 'pattern'>): InputState {
+  static init({ mask, placeholder }: Omit<ReducerOptions, 'pattern'>): InputState {
     const firstPlace = mask.indexOf(placeholder);
 
-    return State.of(mask.slice(0, firstPlace));
-  },
+    return StateUtil.of(mask.slice(0, firstPlace));
+  }
 
-  fromTarget(target: HTMLInputElement): InputState {
-    return State.of(target.value, Range.fromTarget(target));
-  },
+  static fromTarget(target: HTMLInputElement): InputState {
+    return StateUtil.of(target.value, rangeFromTarget(target));
+  }
 
-  apply(state: InputState, target: HTMLInputElement): void {
+  static apply(state: InputState, target: HTMLInputElement): void {
     target.value = state.value;
-    State.applySelection(state, target);
-  },
+    StateUtil.applySelection(state, target);
+  }
 
-  applyDiff(state: InputState, target: HTMLInputElement) {
+  static applyDiff(state: InputState, target: HTMLInputElement) {
     if (target.value !== state.value) {
       target.value = state.value;
-      State.applySelection(state, target);
+      StateUtil.applySelection(state, target);
     } else if (
       target.selectionStart !== state.range.start ||
       target.selectionEnd !== state.range.end
     ) {
-      State.applySelection(state, target);
+      StateUtil.applySelection(state, target);
     }
-  },
+  }
 
-  applySelection(state: InputState, target: HTMLInputElement) {
+  static applySelection(state: InputState, target: HTMLInputElement) {
     // в Safari поле получает фокус при вызове setSelectionRange - проверяем необходимость установки
     if (target === document.activeElement) {
       target.setSelectionRange(state.range.start, state.range.end);
     }
-  },
-} as const;
+  }
+}
 
-export const Value = {
-  cleanToMasked(
+export abstract class ValueUtil {
+  static cleanToMasked(
     { mask, placeholder }: Omit<ReducerOptions, 'pattern'>,
     cleanValue: string,
-  ) {
+  ): string {
     let result = '';
 
     for (let i = 0, j = 0; i < mask.length; i++) {
@@ -66,12 +62,12 @@ export const Value = {
     }
 
     return result;
-  },
+  }
 
-  maskedToClean(
+  static maskedToClean(
     { mask, placeholder }: Omit<ReducerOptions, 'pattern'>,
     maskedValue: string,
-  ) {
+  ): string {
     let result = '';
 
     for (let i = 0; i < maskedValue.length; i++) {
@@ -81,19 +77,5 @@ export const Value = {
     }
 
     return result;
-  },
-
-  /**
-   * @deprecated Use "cleanToMasked" instead.
-   */
-  toMasked(maskOptions: Omit<ReducerOptions, 'pattern'>, maskedValue: string) {
-    return Value.cleanToMasked(maskOptions, maskedValue);
-  },
-
-  /**
-   * @deprecated Use "maskedToClean" instead.
-   */
-  toClean(maskOptions: Omit<ReducerOptions, 'pattern'>, maskedValue: string) {
-    return Value.maskedToClean(maskOptions, maskedValue);
-  },
-} as const;
+  }
+}

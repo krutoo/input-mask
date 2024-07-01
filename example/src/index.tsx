@@ -1,6 +1,6 @@
 import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { type InputMaskControl, InputMask } from "../../src/dom/mod";
+import { type InputMask, createInputMask } from "@krutoo/input-mask/dom";
 import "./index.css";
 
 const variants = [
@@ -44,11 +44,11 @@ function DemoBlock({
   label: string;
   inputProps?: InputHTMLAttributes<HTMLInputElement>;
 }) {
-  const [inputMask, setInputMask] = useState<InputMaskControl | null>(null);
+  const [inputMask, setInputMask] = useState<InputMask | null>(null);
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const im = InputMask(ref.current!, { mask });
+    const im = createInputMask(ref.current!, { mask });
 
     setInputMask(im);
 

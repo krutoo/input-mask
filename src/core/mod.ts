@@ -1,3 +1,4 @@
-export * from './range.ts';
-export * from './changes.ts';
-export * from './reducer.ts';
+export type * from './types.ts';
+export { RangeUtil } from './range.ts';
+export { defineChanges } from './changes.ts';
+export { createReducer } from './reducer.ts';
