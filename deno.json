@@ -2,7 +2,7 @@
   "name": "@krutoo/input-mask",
   "version": "0.0.0",
   "tasks": {
-    "lint": "deno lint && deno check src/**/*.ts",
+    "lint": "deno check src/**/*.ts && deno lint && deno fmt --check",
     "build-npm": "deno run -A scripts/build-npm.ts"
   },
   "imports": {
