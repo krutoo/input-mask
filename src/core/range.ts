@@ -1,39 +1,42 @@
-export interface IRange {
-  start: number;
-  end: number;
-
-  /** @deprecated Use "start" instead. */
-  head: number;
-
-  /** @deprecated Use "end" instead. */
-  last: number;
-}
+import type { Range } from './types.ts';
 
 /**
  * Работа с числовыми диапазонами.
  */
-export const Range = {
-  of: (start: number, end = start): IRange => ({ start, end, head: start, last: end }),
+export abstract class RangeUtil {
+  static of(start: number, end = start): Range {
+    return { start, end };
+  }
 
-  clone: (r: IRange): IRange => ({ ...r }),
+  static clone(range: Range): Range {
+    return { ...range };
+  }
 
-  map: (r: IRange, cb: (n: number) => number): IRange => Range.of(cb(r.start), cb(r.end)),
+  static map(range: Range, callback: (n: number) => number): Range {
+    return RangeUtil.of(callback(range.start), callback(range.end));
+  }
 
-  equals: (a: IRange, b: IRange): boolean => a.start === b.start && a.end === b.end,
+  static equals(a: Range, b: Range): boolean {
+    return a.start === b.start && a.end === b.end;
+  }
 
-  size: (r: IRange) => Math.max(r.start, r.end) - Math.min(r.start, r.end),
+  static size(range: Range): number {
+    return Math.max(range.start, range.end) - Math.min(range.start, range.end);
+  }
 
-  spread: (r: IRange): number[] => {
+  static spread(range: Range): number[] {
     const result = [];
 
-    if (r.start !== r.end) {
-      for (let i = r.start; i < r.end; i++) {
+    if (range.start !== range.end) {
+      for (let i = range.start; i < range.end; i++) {
         result.push(i);
       }
     }
 
     return result;
-  },
+  }
 
-  spreadOf: (start: number, end: number): number[] => Range.spread(Range.of(start, end)),
-};
+  static spreadOf(start: number, end: number): number[] {
+    return RangeUtil.spread(RangeUtil.of(start, end));
+  }
+}

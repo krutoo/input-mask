@@ -1,11 +1,11 @@
-import { Range } from './range.ts';
-import type { ChangeAction, InputState } from './reducer.ts';
+import type { ChangeAction, InputState } from './types.ts';
+import { RangeUtil } from './range.ts';
 
 /**
  * Получив предыдущее и новое состояния текстового поля определит тип изменений.
  * ВАЖНО: только определяет изменения, ничего не знает про маски.
  */
-export const defineChanges = (prev: InputState, next: InputState): ChangeAction => {
+export function defineChanges(prev: InputState, next: InputState): ChangeAction {
   const hasChanges = prev.value !== next.value;
 
   let type: ChangeAction['type'] = 'UNKNOWN';
@@ -14,7 +14,7 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
   // define type
   if (hasChanges) {
     if (next.value.length > prev.value.length) {
-      if (Range.size(prev.range) > 0) {
+      if (RangeUtil.size(prev.range) > 0) {
         type = 'REPLACE';
       } else {
         type = 'INSERT';
@@ -26,14 +26,14 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
 
       if (
         restored === prev.value ||
-        (Range.size(prev.range) === 0 && Range.size(next.range) === 0)
+        (RangeUtil.size(prev.range) === 0 && RangeUtil.size(next.range) === 0)
       ) {
         type = 'DELETE';
       } else {
         type = 'REPLACE';
       }
     }
-  } else if (!Range.equals(prev.range, next.range)) {
+  } else if (!RangeUtil.equals(prev.range, next.range)) {
     // вставили то же самое что уже было введено
     type = 'REPLACE';
   }
@@ -44,27 +44,27 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
       payload = {
         ...next,
         insertPosition: prev.range.start,
-        insertIndices: Range.spreadOf(prev.range.start, next.range.end),
+        insertIndices: RangeUtil.spreadOf(prev.range.start, next.range.end),
       };
       break;
 
     case 'DELETE': {
       let deleteIndices: number[] = [];
 
-      if (Range.size(prev.range) === 0) {
+      if (RangeUtil.size(prev.range) === 0) {
         // удалили какую-то часть текста (delete forward/backward, hard/soft...)
         if (next.range.start === prev.range.start) {
           // удалили после каретки (aka delete)
           const delta = prev.value.length - next.value.length;
 
-          deleteIndices = Range.spreadOf(prev.range.start, prev.range.start + delta);
+          deleteIndices = RangeUtil.spreadOf(prev.range.start, prev.range.start + delta);
         } else {
           // удалили перед кареткой (aka backspace)
-          deleteIndices = Range.spreadOf(next.range.start, prev.range.start);
+          deleteIndices = RangeUtil.spreadOf(next.range.start, prev.range.start);
         }
       } else {
         // просто вырезали выделенную часть
-        deleteIndices = Range.spreadOf(prev.range.start, prev.range.end);
+        deleteIndices = RangeUtil.spreadOf(prev.range.start, prev.range.end);
       }
 
       payload = {
@@ -81,16 +81,16 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
         payload = {
           ...next,
           replacePosition: prev.range.start,
-          deleteIndices: Range.spread(prev.range),
-          insertIndices: Range.spreadOf(prev.range.start, next.range.end),
+          deleteIndices: RangeUtil.spread(prev.range),
+          insertIndices: RangeUtil.spreadOf(prev.range.start, next.range.end),
         };
       } else {
         // вставили то же самое что уже было введено
         payload = {
           ...next,
           replacePosition: prev.range.start,
-          deleteIndices: Range.spread(prev.range),
-          insertIndices: Range.spread(prev.range),
+          deleteIndices: RangeUtil.spread(prev.range),
+          insertIndices: RangeUtil.spread(prev.range),
         };
       }
       break;
@@ -101,4 +101,4 @@ export const defineChanges = (prev: InputState, next: InputState): ChangeAction 
   }
 
   return { type, payload } as ChangeAction;
-};
+}

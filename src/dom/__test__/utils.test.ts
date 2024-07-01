@@ -1,10 +1,10 @@
 import { describe, test } from '@std/testing/bdd';
 import { expect } from '@std/expect';
-import { ReducerOptions } from '../../core/reducer.ts';
-import { Value } from '../utils.ts';
+import type { ReducerOptions } from '../../core/mod.ts';
+import { ValueUtil } from '../utils.ts';
 
 describe('Value', () => {
-  test('toClean', () => {
+  test('maskedToClean', () => {
     const options: ReducerOptions = {
       mask: '+7 (___) ___-__-__',
       pattern: /\d/,
@@ -14,6 +14,6 @@ describe('Value', () => {
     const input = '+7 (800) 555-35-35';
     const output = '8005553535';
 
-    expect(Value.toClean(options, input)).toBe(output);
+    expect(ValueUtil.maskedToClean(options, input)).toBe(output);
   });
 });

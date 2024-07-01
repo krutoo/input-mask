@@ -8,6 +8,10 @@
     "jsx": "react-jsx",
     "strict": true,
     "skipLibCheck": true,
+    "paths": {
+      "@krutoo/input-mask/core": ["../src/core/mod.ts"],
+      "@krutoo/input-mask/dom": ["../src/dom/mod.ts"]
+    }
   },
   "exclude": ["node_modules"]
 }

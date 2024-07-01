@@ -6,5 +6,8 @@ export default defineConfig({
     polyfill: "off",
     assetPrefix: "/input-mask/",
   },
+  html: {
+    title: "Example of @krutoo/input-mask",
+  },
   plugins: [pluginReact()],
 });
