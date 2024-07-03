@@ -36,7 +36,7 @@ const inputMask = InputMask(input, {
 });
 
 // returns actual state of input
-const { value, cleanValue, completed } = inputMask.getData();
+const { value, cleanValue, completed } = inputMask.getState();
 
 // sets value manually
 inputMask.setValue('00000000000');
