@@ -19,11 +19,11 @@ npm add @krutoo/input-mask
 Usage:
 
 ```ts
-import { InputMask } from '@krutoo/input-mask/dom';
+import { createInputMask } from '@krutoo/input-mask/dom';
 
 const input = document.querySelector('input#phone');
 
-const inputMask = InputMask(input, {
+const inputMask = createInputMask(input, {
   mask: '___-____-____',
   placeholder: '_',
   pattern: /\d/,
